@@ -17,24 +17,30 @@ import java.util.List;
 @Service
 public class TelegramBotService extends TelegramLongPollingBot {
 
+    private static final String GREETING_MESSAGE = "Hello!\nYou subscribed on scheduled posts.";
+
+    @Value("${bot.name}")
     private String botName;
+
+    @Value("${bot.token}")
     private String token;
-    private String lastMessage;
 
     @Autowired
     private SubscriberRepository repository;
 
-    public TelegramBotService(@Value("${bot.name}") String botName,
-                              @Value("${bot.token}") String token) {
-        this.botName = botName;
-        this.token = token;
-    }
-
-    public synchronized void sendMessage(String message) {
-        this.lastMessage = message;
+    public void sendMessage(String text) {
         List<Subscriber> subscribers = repository.findAll();
         subscribers.forEach(subscriber ->
-                executeMessage(createSendMessage(subscriber.getChatId(), message)));
+                executeMessage(subscriber.getChatId(), text));
+    }
+
+    private void executeMessage(Long chatId, String text) {
+        try {
+            SendMessage message = createSendMessage(chatId, text);
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Exception while executing message", e);
+        }
     }
 
     private SendMessage createSendMessage(Long chatId, String text) {
@@ -42,14 +48,6 @@ public class TelegramBotService extends TelegramLongPollingBot {
                 .enableMarkdown(true)
                 .setChatId(chatId)
                 .setText(text);
-    }
-
-    private void executeMessage(SendMessage message) {
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            log.error("Exception while executing message", e);
-        }
     }
 
     @Override
@@ -67,12 +65,12 @@ public class TelegramBotService extends TelegramLongPollingBot {
                 update.getMessage().getText().equals("/start");
     }
 
-    private synchronized void handleSubscribe(Long chatId) {
+    private void handleSubscribe(Long chatId) {
         Subscriber subscriber = repository.findByChatId(chatId);
         if (subscriber == null) {
             saveSubscriber(chatId);
         }
-        executeMessage(createSendMessage(chatId, lastMessage));
+        executeMessage(chatId, GREETING_MESSAGE);
     }
 
     private void saveSubscriber(Long chatId) {
@@ -87,7 +85,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
                 update.getMessage().getText().equals("/stop");
     }
 
-    private synchronized void handleUnsubscribe(Long chatId) {
+    private void handleUnsubscribe(Long chatId) {
         repository.deleteByChatId(chatId);
     }
 
