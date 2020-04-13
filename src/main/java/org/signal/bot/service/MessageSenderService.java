@@ -14,7 +14,7 @@ public class MessageSenderService {
     @Autowired
     private PriceService service;
 
-    @Scheduled(fixedDelay = 1800000)
+    @Scheduled(cron = "0 0/30 * * * *")
     public void sendMessage() {
         Price price = service.getPrice();
         String message = String.format("Best ask %s USD\nBest bid %s USD", price.getAsk(), price.getBid());
