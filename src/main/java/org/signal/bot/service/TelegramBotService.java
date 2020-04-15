@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -53,9 +54,9 @@ public class TelegramBotService extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (isSubscribe(update)) {
-            handleSubscribe(update.getMessage().getChatId());
+            handleSubscribe(update.getMessage());
         } else if (isUnsubscribe(update)) {
-            handleUnsubscribe(update.getMessage().getChatId());
+            handleUnsubscribe(update.getMessage());
         }
     }
 
@@ -65,17 +66,19 @@ public class TelegramBotService extends TelegramLongPollingBot {
                 update.getMessage().getText().equals("/start");
     }
 
-    private void handleSubscribe(Long chatId) {
+    private void handleSubscribe(Message message) {
+        Long chatId = message.getChatId();
         Subscriber subscriber = repository.findByChatId(chatId);
         if (subscriber == null) {
-            saveSubscriber(chatId);
+            saveSubscriber(chatId, message.getFrom().getUserName());
         }
         executeMessage(chatId, GREETING_MESSAGE);
     }
 
-    private void saveSubscriber(Long chatId) {
+    private void saveSubscriber(Long chatId, String userName) {
         Subscriber subscriber = new Subscriber();
         subscriber.setChatId(chatId);
+        subscriber.setName(userName);
         repository.save(subscriber);
     }
 
@@ -85,8 +88,8 @@ public class TelegramBotService extends TelegramLongPollingBot {
                 update.getMessage().getText().equals("/stop");
     }
 
-    private void handleUnsubscribe(Long chatId) {
-        repository.deleteByChatId(chatId);
+    private void handleUnsubscribe(Message message) {
+        repository.deleteByChatId(message.getChatId());
     }
 
     @Override

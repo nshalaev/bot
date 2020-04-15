@@ -11,4 +11,5 @@ public class Subscriber {
     @Id
     private ObjectId id;
     private Long chatId;
+    private String name;
 }
