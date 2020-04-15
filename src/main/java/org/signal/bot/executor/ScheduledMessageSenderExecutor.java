@@ -1,12 +1,14 @@
-package org.signal.bot.service;
+package org.signal.bot.executor;
 
 import org.signal.bot.model.Price;
+import org.signal.bot.service.PriceService;
+import org.signal.bot.service.TelegramBotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MessageSenderService {
+public class ScheduledMessageSenderExecutor {
 
     @Autowired
     private TelegramBotService bot;
