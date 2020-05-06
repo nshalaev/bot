@@ -1,0 +1,3 @@
+rootProject.name = 'bot'
+
+include 'commons', 'mongo-service', 'notification-service', 'statistic-service', 'web-service'
