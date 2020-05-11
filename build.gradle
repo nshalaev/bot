@@ -4,11 +4,19 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
         gradlePluginPortal()
+        jcenter()
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
         classpath "io.spring.gradle:dependency-management-plugin:$dependencyPluginVersion"
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
     }
+}
+
+apply plugin: 'docker-compose'
+
+dockerCompose {
+    useComposeFiles = ['docker-compose.yml']
 }
 
 subprojects {
