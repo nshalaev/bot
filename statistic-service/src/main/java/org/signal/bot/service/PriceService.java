@@ -32,12 +32,12 @@ public class PriceService {
     }
 
     private PriceDTO parsePriceFromJSON(JSONObject json) {
-        BigDecimal bestBid =  json.getBigDecimal("best_bid");
-        BigDecimal bestAsk = json.getBigDecimal("best_ask");
+        BigDecimal bestBid =  json.getBigDecimal("best_bid").setScale(4, RoundingMode.DOWN);
+        BigDecimal bestAsk = json.getBigDecimal("best_ask").setScale(4, RoundingMode.DOWN);
         log.info("Best bid {} USD. Best ask {} USD.", bestBid, bestAsk);
         return PriceDTO.builder()
-                .ask(bestAsk.setScale(4, RoundingMode.DOWN))
-                .bid(bestBid.setScale(4, RoundingMode.DOWN))
+                .ask(bestAsk)
+                .bid(bestBid)
                 .build();
     }
 }

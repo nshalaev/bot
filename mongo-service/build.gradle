@@ -1,8 +1,18 @@
+plugins {
+    id 'com.bmuschko.docker-spring-boot-application' version '6.4.0'
+}
+
 apply plugin: "org.springframework.boot"
 
 dependencies {
     implementation project(":commons")
-
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'openjdk:8-alpine'
+        ports = [8088]
+    }
 }

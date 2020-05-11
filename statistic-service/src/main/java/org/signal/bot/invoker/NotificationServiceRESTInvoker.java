@@ -1,29 +1,27 @@
 package org.signal.bot.invoker;
 
-import org.signal.bot.dto.PriceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Component
-public class MongoServiceRESTInvoker {
+@Service
+public class NotificationServiceRESTInvoker {
 
-    @Value("${mongo.service.host}")
+    @Value("${notification.service.host}")
     private String host;
 
-    @Value("${mongo.service.port}")
+    @Value("${notification.service.port}")
     private String port;
 
     @Autowired
     private RestTemplate restTemplate;
 
-    public void save(PriceDTO price) {
+    public void pingNotificationService() {
         UriComponents uriComponents = UriComponentsBuilder
-                .fromHttpUrl(host).port(port).path("prices").build();
-        restTemplate.put(uriComponents.toUriString(), price);
+                .fromHttpUrl(host).port(port).path("notification").build();
+        restTemplate.postForEntity(uriComponents.toUriString(), null, void.class);
     }
-
 }

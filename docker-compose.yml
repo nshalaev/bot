@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  mongo-db:
+    image: "mongo"
+    ports:
+      - "127.0.0.1:27017:27017"
+  mongo-service:
+    image: "bot/mongo-service"
+    ports:
+      - "8088:8088"
+    depends_on:
+      - "mongo-db"
+  statistic-service:
+    image: "bot/statistic-service"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "mongo-service"
+      - "notification-service"
+  notification-service:
+    image: "bot/notification-service"
+    ports:
+      - "8081:8081"
+    depends_on:
+      - "mongo-service"
