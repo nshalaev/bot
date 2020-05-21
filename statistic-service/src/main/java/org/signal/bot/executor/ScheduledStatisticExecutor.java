@@ -1,5 +1,6 @@
 package org.signal.bot.executor;
 
+import org.signal.bot.domain.Price;
 import org.signal.bot.invoker.NotificationServiceRESTInvoker;
 import org.signal.bot.service.PriceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class ScheduledStatisticExecutor {
 
     @Scheduled(cron = "0 0/30 * * * *")
     public void handleStatistic() {
-        priceService.handleNewPrice();
-        notificationServicePingService.pingNotificationService();
+        Price price = priceService.handleNewPrice();
+        notificationServicePingService.pingNotificationService(price);
     }
 
 }

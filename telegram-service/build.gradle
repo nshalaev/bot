@@ -7,13 +7,13 @@ apply plugin: "org.springframework.boot"
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
-    implementation "org.json:json:$jsonVersion"
+    implementation "org.telegram:telegrambots-spring-boot-starter:$telegramBotVersion"
 }
 
 docker {
     springBootApplication {
         baseImage = 'openjdk:8-alpine'
-        ports = [8080]
+        ports = [8081]
         jvmArgs = ["-Dspring.profiles.active=local"]
     }
 }
