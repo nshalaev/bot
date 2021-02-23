@@ -1,0 +1,6 @@
+currency-service:
+  currencyTypes:
+    - RUB
+  applicationId: db6af11d042f43ec958751f5b06941c5
+
+open-exchange.url: https://openexchangerates.org/api/
